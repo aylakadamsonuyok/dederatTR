@@ -1,0 +1,10 @@
+discord.py
+opencv-python
+pynput
+pillow
+pyautogui
+pyaudio
+requests
+numpy
+pygetwindow
+pygame
