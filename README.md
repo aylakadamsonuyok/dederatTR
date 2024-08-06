@@ -46,6 +46,10 @@ pyinstaller --onefile --noconsole config.py
 - **wifipasswords** - Kaydedilen Wi-Fi ağlarını ve şifrelerini listeler.
 - **grab** - Kurbanın şifrelerini çeker.
 
+# Sorumluluk Reddi:
+
+Bu tool ile yapılan hiç bir şeyin sorumluluğunu kabul etmiyorum, sorumluluk toolu kullanan kişidedir.
+
 # Teşekkürler:
 
 - LydexCoding
